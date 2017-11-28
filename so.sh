@@ -1,8 +1,9 @@
 #!/bin/bash
+#chmod +x is necessary
 SOID="USER"
 SOPW="PASSWORT"
-
 DWfolder="$HOME/Downloads/so"
+downloadrate
 mkdir $DWfolder
 
 cd $DWfolder
@@ -13,7 +14,11 @@ cd $DWfolder
 	cat urls.txt 
 	echo
 	echo -e "\033[41mUrls Reload? j / n \033[0m"
-	read -s urlreload
+	read  urlreload
+	echo -e "\033[41mDownload Speed Type 400k for 400KBs \033[0m"
+	read downloadrate
+
+
 
 if [ "urlreload" = "j" ]
   then
@@ -33,5 +38,5 @@ for url in $(cat urls.txt)
 		echo -e "\033[42mGeneriere SHARE Link\033[0m"
 		url=$(wget --quiet -O- "http://api.share-online.biz/cgi-bin?q=linkdata&username=$SOID&password=$SOPW&lid=$(basename "$url")" | grep 'URL' | cut -f 2 -d ' ');
 		echo -e "\033[42mDownload URL \033[0m"$url
-		wget -c  --content-disposition --header "Cookie: $socookie" $url
+		wget -c  --limit-rate=$downloadrate --content-disposition --header "Cookie: $socookie" $url
 	done
